@@ -15,7 +15,7 @@ url="http://freerdp.sourceforge.net"
 license=('GPL')
 depends=('openssl' 'libxcursor' 'libcups' 'alsa-lib' 'libxext' 'libxdamage'
 	 'ffmpeg' 'libxkbfile' 'libxinerama' 'libxv' 'libpulse' 'libxkbfile'
-	 'libxrender' 'libxfixes' 'gst-plugins-base-libs')
+	 'libxrender' 'libxfixes' 'gst-plugins-base-libs' 'libusb' 'util-linux' 'dbus-glib' 'pcsclite')
 makedepends=('krb5' 'cmake' 'damageproto' 'fixesproto' 'renderproto'
 	     'xmlto' 'docbook-xsl' 'git')
 provides=('libwinpr-tools2.so' 'libfreerdp-client2.so' 'libfreerdp2.so'
@@ -33,14 +33,17 @@ prepare() {
 
 build() {
   cd "$srcdir"/FreeRDP-${_pkgver}
+  # If debug is needed, append: -DCMAKE_BUILD_TYPE=Debug
   cmake \
 	-DCMAKE_INSTALL_PREFIX=/usr \
 	-DCMAKE_INSTALL_LIBDIR=lib \
+    -DWITH_PCSC=ON \
 	-DWITH_PULSE=ON \
 	-DWITH_CUPS=ON \
 	-DWITH_CHANNELS=ON \
 	-DWITH_CLIENT_CHANNELS=ON \
 	-DWITH_SERVER_CHANNELS=ON \
+    -DCHANNEL_URBDRC=ON \
     -DCHANNEL_URBDRC_CLIENT=ON \
 	-DWITH_WAYLAND=ON \
 	.
