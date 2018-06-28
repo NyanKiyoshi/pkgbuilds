@@ -1,0 +1,36 @@
+pkgname=libusb1
+pkgver=1.0.22
+pkgrel=6
+pkgdesc="Library to enable user space application programs to communicate with USB devices. 1.x branch. Debian's binary."
+arch=('i686' 'x86_64')
+url="http://libusb.sourceforge.net/"
+license=('LGPL')
+depends=('sh')
+provides=('libusb-compat')
+#replaces=('libusb-compat')
+conflicts=('libusb-compat')
+_debianver="1.0.22-2"
+source_x86_64=("http://ftp.debian.org/debian/pool/main/libu/libusb-1.0/libusb-1.0-0_${_debianver}_amd64.deb"
+              "http://ftp.debian.org/debian/pool/main/libu/libusb-1.0/libusb-1.0-0-dev_${_debianver}_amd64.deb")
+md5sums_x86_64=('79a9aa4002326184442176e70c6543d5'
+                'ed6877daf61edc45f43c4fea1842e2a8')
+
+noextract=("${source[@]%%::*}")
+
+prepare() {
+  ar x ${srcdir}/libusb-1.0-0-dev_${_debianver}*.deb
+  mv ${srcdir}/data.tar.xz ${srcdir}/data-dev.tar.xz
+  ar x libusb-1.0-0_${_debianver}*.deb
+}
+
+package() {
+  tar axvf ${srcdir}/data.tar.xz -C ${pkgdir}/
+  tar axvf ${srcdir}/data-dev.tar.xz -C ${pkgdir}/
+  mkdir -p ${pkgdir}/usr/lib
+  mv ${pkgdir}/usr/lib/x86_64-linux-gnu/* ${pkgdir}/usr/lib || true
+  mv ${pkgdir}/lib/x86_64-linux-gnu/* ${pkgdir}/usr/lib || true
+  rm -r ${pkgdir}/lib/x86_64-linux-gnu \
+        ${pkgdir}/usr/lib/x86_64-linux-gnu || true
+  rm -rf ${pkgdir}/lib/
+}
+
